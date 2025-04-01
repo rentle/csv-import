@@ -20,6 +20,7 @@ const CSVImporter = forwardRef((importerProps: CSVImporterProps, forwardRef?: an
     primaryColor = "#7a5ef8",
     className,
     onComplete,
+    onHeadersMapped,
     customStyles,
     showDownloadTemplateButton,
     skipHeaderRowSelection,

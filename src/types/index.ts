@@ -1,5 +1,6 @@
 import { Resource } from "i18next";
 import { HTMLAttributes } from "react";
+import { TemplateColumnMapping } from "../importer/features/map-columns/types";
 
 type ModalParams = {
   isModal?: boolean;
@@ -14,6 +15,7 @@ export type CSVImporterProps = (HTMLAttributes<HTMLDialogElement> & HTMLAttribut
   primaryColor?: string;
   className?: string;
   onComplete?: (data: any) => void;
+  onHeadersMapped?: (selectedHeaderRow: number | null, mappedHeaders: { [index: number]: TemplateColumnMapping }, originalFile: File | null) => Promise<void>;
   waitOnComplete?: boolean;
   customStyles?: Record<string, string> | string;
   showDownloadTemplateButton?: boolean;

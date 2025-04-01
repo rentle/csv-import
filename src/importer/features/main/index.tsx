@@ -26,6 +26,7 @@ export default function Main(props: CSVImporterProps) {
     modalOnCloseTriggered = () => null,
     template,
     onComplete,
+    onHeadersMapped,
     customStyles,
     showDownloadTemplateButton,
     skipHeaderRowSelection,
@@ -43,6 +44,7 @@ export default function Main(props: CSVImporterProps) {
   // Error handling
   const [initializationError, setInitializationError] = useState<string | null>(null);
   const [dataError, setDataError] = useState<string | null>(null);
+  const [originalFile, setOriginalFile] = useState<File | null>(null);
 
   // File data
   const emptyData = {
@@ -90,6 +92,7 @@ export default function Main(props: CSVImporterProps) {
     setColumnMapping({});
     setDataError(null);
     setStep(StepEnum.Upload);
+    setOriginalFile(null);
   };
 
   const requestClose = () => {
@@ -121,6 +124,7 @@ export default function Main(props: CSVImporterProps) {
             setDataError={setDataError}
             onSuccess={async (file: File) => {
               setDataError(null);
+              setOriginalFile(file);
               const fileType = file.name.slice(file.name.lastIndexOf(".") + 1);
               if (!["csv", "xls", "xlsx"].includes(fileType)) {
                 setDataError(t("Only CSV, XLS, and XLSX files can be uploaded"));
@@ -199,7 +203,18 @@ export default function Main(props: CSVImporterProps) {
             onSuccess={(columnMapping) => {
               setIsSubmitting(true);
               setColumnMapping(columnMapping);
-
+              if (onHeadersMapped) {
+                onHeadersMapped(selectedHeaderRow, columnMapping, originalFile)
+                  .then(() => {
+                    setIsSubmitting(false);
+                    goNext();
+                  })
+                  .catch((error) => {
+                    console.error("onHeadersMapped error", error);
+                    setDataError("An error occurred while processing the data");
+                  });
+                return;
+              }
               // TODO (client-sdk): Move this type, add other data attributes (i.e. column definitions), and move the data processing to a function
               type MappedRow = {
                 index: number;

@@ -50,6 +50,8 @@ const Template: Story<typeof ImporterComponent> = (args: CSVImporterProps) => {
     ...args,
   };
 
+  console.log(props);
+
   return (
     <div>
       {args.isModal && <button onClick={() => setIsOpen(true)}>Import</button>}
@@ -73,4 +75,15 @@ Importer.args = {
       "Browse files": "Procurar arquivos",
     },
   },
+};
+
+const onHeadersMapped: CSVImporterProps['onHeadersMapped'] = async (selectedHeaderRow, mappedHeaders, originalFile) => {
+  console.log("onHeadersMapped:", selectedHeaderRow, mappedHeaders, originalFile);
+  return;
+};
+
+export const ImporterWithHeadersMapped = Template.bind({});
+ImporterWithHeadersMapped.args = {
+  ...Importer.args,
+  onHeadersMapped,
 };
